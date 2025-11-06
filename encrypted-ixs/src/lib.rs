@@ -19,7 +19,7 @@ mod circuits {
     }
 
     #[instruction]
-    pub fn init_creators_balance(input_ctxt: Enc<Mxe, TipAmount>) -> Enc<Mxe, BalanceValues> {
+    pub fn init_creators_balance(input_ctxt: Enc<Shared, TipAmount>) -> Enc<Shared, BalanceValues> {
         let balance_values = BalanceValues { total_tips: 0, unclaimed_tips: 0 };
         input_ctxt.owner.from_arcis(balance_values)
     }

@@ -20,14 +20,14 @@ pub mod unchain_protocol {
         Ok(())
     }
 
-    pub fn init_creators_balance_comp_def(ctx: Context<InitCreatorsBalanceCompDef>) -> Result<()> {
+    pub fn init_init_creators_balance_comp_def(ctx: Context<InitInitCreatorsBalanceCompDef>) -> Result<()> {
         init_comp_def(ctx.accounts, true, 0, None, None)?;
         Ok(())
     }
 
 
-    pub fn become_a_creator(
-        ctx: Context<BecomeACreator>,
+    pub fn init_creators_balance(
+        ctx: Context<InitCreatorsBalance>,
         computation_offset: u64,
         name: String, 
         title: String, 
@@ -203,8 +203,17 @@ pub struct InitializeVault<'info> {
 
 #[queue_computation_accounts("init_creators_balance", payer)]
 #[derive(Accounts)]
-#[instruction(computation_offset: u64, name: String, title: String, about: String, image_cid: String)]
-pub struct BecomeACreator<'info> {
+#[instruction(
+    computation_offset: u64,
+    name: String,
+    title: String,
+    about: String,
+    image_cid: String,
+    unchain_profile: [u8; 32],  // For x25519 pubkey
+    initial_tip: [u8; 32],       // Encrypted bytes (e.g., for BigInt(0))
+    nonce: u128                 // LE nonce as u64
+)]
+pub struct InitCreatorsBalance<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
     #[account(
@@ -297,7 +306,7 @@ pub struct InitCreatorsBalanceCallback<'info> {
 
 #[init_computation_definition_accounts("init_creators_balance", payer)]
 #[derive(Accounts)]
-pub struct InitCreatorsBalanceCompDef<'info> {
+pub struct InitInitCreatorsBalanceCompDef<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
     #[account(
